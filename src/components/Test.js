@@ -7,7 +7,10 @@ function Test() {
 
     const init = {
         Number:0,
-        type:'TF',
+        type:'SN'
+    }
+
+    const stat_init = {
         E:0,
         I:0,
         S:0,
@@ -22,30 +25,42 @@ function Test() {
 
     const [data, setData] = useState([])
     const [question, setQuestion] = useState(init)
+    const [stat, setStat] = useState(stat_init)
 
     console.log(question)
 
-    useEffect(async() => {
+    useEffect(() => {
         setData(dummy.question)
     }, [data]);
 
     if(data.length === 0) return <div>Loading...</div>;
 
-    const onQuestionHandlerA = (e) => {
-        isFinal()
-        const tmp = question.type[1]
-        setQuestion({...question, Number : question.Number + 1, type:data[question.Number + 1].type})
-    }
+    const onQuestionHandler = (N,e) => {
+        
+        isType(N)
 
-    const onQuestionHandlerB = (e) => {
-        isFinal()
-        const tmp = question.type[1]
-        setQuestion({...question, Number : question.Number + 1, type:data[question.Number + 1].type})
-    }
-
-    const isFinal = () => {
         if(question.Number === 11){ //테스트 완료
-            console.log('complete')
+            console.log(stat)
+            history.push('/result');
+            return
+        }
+
+        setQuestion({...question, 
+            Number : question.Number + 1, 
+            type:data[question.Number + 1].type}
+        )
+    }
+
+    const isType = (val) => {
+
+        const tmp = question.type[val] //'F'
+        const copy = {...stat}
+        copy[tmp] = stat[tmp] + 1
+
+        setStat({...copy})
+
+        if(question.Number === 11){ //테스트 완료
+            console.log(stat)
             history.push('/result');
         }
     }
@@ -55,9 +70,8 @@ function Test() {
             <div className="question">
                 Q. {data[question.Number].Q}
             </div>
-
-                <div className="answer A" onClick={onQuestionHandlerA}>{data[question.Number].A}</div>
-                <div className="answer B" onClick={onQuestionHandlerB}>{data[question.Number].B}</div>
+                <div className="answer A" onClick={(e) => onQuestionHandler(0,e)}>{data[question.Number].A}</div>
+                <div className="answer B" onClick={(e) => onQuestionHandler(1,e)}>{data[question.Number].B}</div>
         </div>
     )
 }
