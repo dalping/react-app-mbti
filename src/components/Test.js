@@ -23,7 +23,7 @@ function Test(props) {
     const [stat, setStat] = useState(statInit)
 
     useEffect(() => {
-        setData(dummy.question)
+        setData(dummy.questions)
     }, [data]);
 
     useEffect(()=>{ //테스트 종료 확인
