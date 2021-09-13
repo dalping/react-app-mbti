@@ -2,15 +2,10 @@ import React,{useState, useEffect} from 'react'
 import dummy from '../db/data.json';
 import { useHistory } from 'react-router';
 
-//EI SN TF JP
-function Test() {
+function Test(props) {
 
-    const init = {
-        Number:0,
-        type:'SN'
-    }
-
-    const stat_init = {
+    const statInit = {
+        //넘버부터 바꾸고 현재 타입을 넣어보자.
         E:0,
         I:0,
         S:0,
@@ -24,56 +19,68 @@ function Test() {
     const history = useHistory();
 
     const [data, setData] = useState([])
-    const [question, setQuestion] = useState(init)
-    const [stat, setStat] = useState(stat_init)
-
-    console.log(question)
+    const [question, setQuestion] = useState(0)
+    const [stat, setStat] = useState(statInit)
 
     useEffect(() => {
         setData(dummy.question)
     }, [data]);
 
-    if(data.length === 0) return <div>Loading...</div>;
-
-    const onQuestionHandler = (N,e) => {
-        
-        isType(N)
-
-        if(question.Number === 11){ //테스트 완료
-            console.log(stat)
+    useEffect(()=>{ //테스트 종료 확인
+        if(question === 12){ 
+            props.onMbti(getResult())
             history.push('/result');
             return
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [question])
 
-        setQuestion({...question, 
-            Number : question.Number + 1, 
-            type:data[question.Number + 1].type}
-        )
+    if(data.length === 0) return <div>Loading...</div>;
+
+    const onQuestionHandler = (N,e) => {
+        updateStat(N)
+        setQuestion(question + 1)
     }
 
-    const isType = (val) => {
-
-        const tmp = question.type[val] //'F'
+    const updateStat = (val) => {
+        const key = data[question].type[val]
         const copy = {...stat}
-        copy[tmp] = stat[tmp] + 1
+        copy[key] = stat[key] + 1
+        setStat(copy) 
+    }
 
-        setStat({...copy})
+    const getResult = () =>{
+        let mbti = '';
 
-        if(question.Number === 11){ //테스트 완료
-            console.log(stat)
-            history.push('/result');
+        mbti += Compare('I','E')
+        mbti += Compare('S','N')
+        mbti += Compare('T','F')
+        mbti += Compare('J','P')
+
+        return [mbti, stat]
+    }
+
+    const Compare = (A, B) => {
+        if(stat[A] < stat[B]){
+            return B
+        }else{
+            return A
         }
     }
 
-    return (
-        <div className="test">
-            <div className="question">
-                Q. {data[question.Number].Q}
+    if(question < 12){
+        return (
+            <div className="test">
+                <div className="question">
+                    {question + 1}. {data[question].Q}
+                </div>
+                    <div className="answer A" onClick={(e) => onQuestionHandler(0,e)}>{data[question].A}</div>
+                    <div className="answer B" onClick={(e) => onQuestionHandler(1,e)}>{data[question].B}</div>
             </div>
-                <div className="answer A" onClick={(e) => onQuestionHandler(0,e)}>{data[question.Number].A}</div>
-                <div className="answer B" onClick={(e) => onQuestionHandler(1,e)}>{data[question.Number].B}</div>
-        </div>
-    )
+        )
+    }else{
+        return null
+    }
 }
 
 export default Test
