@@ -26,8 +26,7 @@
   justify-content: center;
   align-items: center;
   background-color: rgb(255, 255, 255);
-  background-color: #dfebd5;
-  height: 80vh;
+  height: 90vh;
   width: 100%;
 }
 
@@ -90,4 +89,12 @@
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.bottom {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 8vh;
+  background-color: #dfebd5;
 }

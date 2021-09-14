@@ -5,6 +5,7 @@ import {Route, BrowserRouter} from 'react-router-dom';
 import { useState } from 'react';
 
 import Test from './components/Test';
+import Bottom from './components/Bottom';
 
 function App() {
 
@@ -19,13 +20,13 @@ function App() {
       <div className="App">
         <Navbar/>
           <Route exact path="/result">
-            <Main mbti={mbti}/>
+            <Main type={mbti}/>
           </Route>
           <Route exact path="/">
             <Test onMbti={onMbti}/>
           </Route>
           {/* <Main/> */}
-        
+        <Bottom/>
       </div>
     </BrowserRouter>
   );
